@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Công cụ Luyện Kể Chuyện - The Present (A1)</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f2f5;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+
+        h1 { color: #333; text-align: center; }
+        
+        .controls {
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .controls select, .controls input {
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        button#speakBtn {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button#speakBtn:hover { background-color: #0056b3; }
+        button#speakBtn:disabled { background-color: #ccc; cursor: not-allowed; }
+
+        .version-container {
+            display: flex;
+            gap: 20px;
+            width: 100%;
+            max-width: 900px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .version {
+            flex: 1;
+            min-width: 350px;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .version h2 { text-align: center; color: #007bff; border-bottom: 2px solid #eee; padding-bottom: 10px;}
+
+        .story-line {
+            padding: 10px;
+            border-bottom: 1px solid #eee;
+            transition: background-color 0.2s;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+        }
+        
+        .story-line:last-child { border-bottom: none; }
+        .story-line:hover { background-color: #e7f1ff; }
+
+        .highlight {
+            background-color: #fff3cd !important;
+            font-weight: bold;
+            border-left: 5px solid #ffc107;
+        }
+
+        .sentence-number {
+            font-weight: bold;
+            color: #007bff;
+            margin-right: 15px;
+            font-size: 1.2em;
+            min-width: 25px;
+            text-align: right;
+        }
+        
+        .keyword-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .keyword {
+            font-weight: bold;
+            color: #dc3545;
+            font-size: 1.1em;
+            background: #ffe6e6;
+            padding: 2px 8px;
+            border-radius: 4px;
+        }
+
+    </style>
+</head>
+<body>
+
+    <h1>Công cụ Luyện Kể Chuyện - The Present (A1)</h1>
+
+    <div class="controls">
+        <label for="voiceSelect">Giọng đọc:</label>
+        <select id="voiceSelect"></select>
+
+        <label for="rateInput">Tốc độ (0.5 - 1.5):</label>
+        <input type="number" id="rateInput" value="0.9" step="0.1" min="0.5" max="1.5">
+
+        <button id="speakBtn">Bắt đầu kể chuyện</button>
+    </div>
+
+    <div class="version-container">
+        <!-- Phiên bản 1: Hiển thị từng câu đầy đủ -->
+        <div id="version1" class="version">
+            <h2>Phiên bản 1 (Tô sáng câu)</h2>
+            <!-- Các câu chuyện sẽ được chèn vào đây bằng JavaScript -->
+        </div>
+
+        <!-- Phiên bản 2: Hiển thị keyword -->
+        <div id="version2" class="version">
+            <h2>Phiên bản 2 (Keyword)</h2>
+            <!-- Các keyword sẽ được chèn vào đây bằng JavaScript -->
+        </div>
+    </div>
+
+    <script>
+        const synth = window.speechSynthesis;
+        const voiceSelect = document.getElementById('voiceSelect');
+        const rateInput = document.getElementById('rateInput');
+        const speakBtn = document.getElementById('speakBtn');
+        const version1Div = document.getElementById('version1');
+        const version2Div = document.getElementById('version2');
+
+        const story = [
+            { full: "The boy is playing games.", keyword: "PLAYING GAMES" },
+            { full: "His mom brings a big box.", keyword: "BRINGS A BOX" },
+            { full: "The boy opens the box.", keyword: "OPENS BOX" },
+            { full: "He sees a happy puppy!", keyword: "HAPPY PUPPY!" },
+            { full: "Oh no! It only has three legs.", keyword: "THREE LEGS" },
+            { full: "The puppy plays alone.", keyword: "PLAYS ALONE" },
+            { full: "The boy stands up with crutches.", keyword: "STANDS UP" },
+            { full: "They go outside together.", keyword: "GO OUTSIDE" }
+        ];
+
+        let voices = [];
+        let currentLineIndex = 0;
+        let currentVersionDivs = []; // To store references for highlighting
+
+        function populateVoiceList() {
+            voices = synth.getVoices();
+            // Ưu tiên chọn giọng tiếng Anh Mỹ (en-US)
+            const englishVoices = voices.filter(v => v.lang === 'en-US');
+            
+            // Fallback: nếu không tìm thấy en-US, chọn bất kỳ giọng tiếng Anh nào
+            const allEnglish = voices.filter(v => v.lang.startsWith('en'));
+            
+            const targetVoices = englishVoices.length > 0 ? englishVoices : allEnglish;
+
+            targetVoices.forEach((voice, i) => {
+                const option = document.createElement('option');
+                option.textContent = `${voice.name} (${voice.lang})`;
+                option.setAttribute('data-name', voice.name);
+                voiceSelect.appendChild(option);
+                
+                // Chọn giọng đầu tiên làm mặc định
+                if (i === 0) voiceSelect.value = option.value;
+            });
+        }
+
+        // Khởi tạo danh sách giọng
+        populateVoiceList();
+        if (speechSynthesis.onvoiceschanged !== undefined) {
+            speechSynthesis.onvoiceschanged = populateVoiceList;
+        }
+
+        // Khởi tạo giao diện
+        function initUI() {
+            story.forEach((item, index) => {
+                // Version 1
+                const v1Line = document.createElement('div');
+                v1Line.className = 'story-line';
+                v1Line.innerHTML = `<span class="sentence-number">${index + 1}.</span><span>${item.full}</span>`;
+                v1Line.onclick = () => readLine(index, v1Line);
+                version1Div.appendChild(v1Line);
+
+                // Version 2
+                const v2Line = document.createElement('div');
+                v2Line.className = 'story-line keyword-container';
+                v2Line.innerHTML = `<span><span class="sentence-number">${index + 1}.</span><span class="full-sentence">${item.full}</span></span><span class="keyword">${item.keyword}</span>`;
+                v2Line.onclick = () => readLine(index, v2Line); // Click vào dòng bất kỳ để đọc
+                version2Div.appendChild(v2Line);
+            });
+        }
+        
+        initUI();
+
+        function readLine(index, lineElement) {
+            if (synth.speaking) {
+                synth.cancel();
+            }
+
+            // Hủy tô sáng cũ
+            document.querySelectorAll('.highlight').forEach(el => el.classList.remove('highlight'));
+
+            // Tô sáng dòng mới
+            lineElement.classList.add('highlight');
+            
+            const utterance = new SpeechSynthesisUtterance(story[index].full);
+            
+            const selectedVoiceName = voiceSelect.selectedOptions[0].getAttribute('data-name');
+            utterance.voice = voices.find(v => v.name === selectedVoiceName);
+            utterance.rate = parseFloat(rateInput.value);
+            
+            utterance.onend = () => {
+                // Hủy tô sáng khi đọc xong
+                lineElement.classList.remove('highlight');
+                currentLineIndex = index + 1;
+                if (currentLineIndex < story.length) {
+                    // Tự động đọc câu tiếp theo (optional)
+                    // readNextLine(); 
+                }
+            };
+
+            synth.speak(utterance);
+        }
+
+        function readNextLine() {
+            if (currentLineIndex >= story.length) {
+                currentLineIndex = 0; // Quay lại từ đầu
+                speakBtn.textContent = "Bắt đầu lại";
+                return;
+            }
+            
+            // Tìm element tương ứng của cả 2 version
+            const v1Element = version1Div.querySelectorAll('.story-line')[currentLineIndex];
+            const v2Element = version2Div.querySelectorAll('.story-line')[currentLineIndex];
+            
+            // Chọn 1 element ngẫu nhiên để highlight và đọc
+            readLine(currentLineIndex, Math.random() > 0.5 ? v1Element : v2Element);
+        }
+
+        speakBtn.addEventListener('click', () => {
+            if (synth.speaking) {
+                synth.cancel();
+                speakBtn.textContent = "Bắt đầu kể chuyện";
+            } else {
+                speakBtn.textContent = "Dừng kể chuyện";
+                currentLineIndex = 0;
+                readNextLine();
+            }
+        });
+
+    </script>
+</body>
+</html>
