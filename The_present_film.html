@@ -3,269 +3,355 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Công cụ Luyện Kể Chuyện - The Present (A1)</title>
+    <title>The Present (A1) - Luyện Kể Chuyện Theo Ảnh</title>
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f0f2f5;
+            background-color: #f4f7fb;
+            color: #1f2937;
+            margin: 0;
+            padding: 20px;
             display: flex;
             flex-direction: column;
             align-items: center;
-            padding: 20px;
         }
 
-        h1 { color: #333; text-align: center; }
-        
+        h1 {
+            margin: 0 0 16px;
+            font-size: 1.5rem;
+            text-align: center;
+            color: #1e3a8a;
+        }
+
         .controls {
-            background: white;
-            padding: 15px;
-            border-radius: 10px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-            margin-bottom: 20px;
+            background: #ffffff;
+            padding: 14px 18px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            margin-bottom: 18px;
             display: flex;
-            gap: 15px;
+            gap: 12px;
             align-items: center;
             flex-wrap: wrap;
             justify-content: center;
-        }
-
-        .controls select, .controls input {
-            padding: 8px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-        }
-
-        button#speakBtn {
-            padding: 10px 20px;
-            background-color: #007bff;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 16px;
-        }
-        button#speakBtn:hover { background-color: #0056b3; }
-        button#speakBtn:disabled { background-color: #ccc; cursor: not-allowed; }
-
-        .version-container {
-            display: flex;
-            gap: 20px;
             width: 100%;
-            max-width: 900px;
-            justify-content: center;
-            flex-wrap: wrap;
+            max-width: 860px;
+            box-sizing: border-box;
         }
 
-        .version {
-            flex: 1;
-            min-width: 350px;
-            background: white;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        select, input[type="number"], button {
+            padding: 8px 12px;
+            border-radius: 8px;
+            border: 1px solid #cbd5e1;
+            font-size: 0.95rem;
         }
 
-        .version h2 { text-align: center; color: #007bff; border-bottom: 2px solid #eee; padding-bottom: 10px;}
-
-        .story-line {
-            padding: 10px;
-            border-bottom: 1px solid #eee;
-            transition: background-color 0.2s;
+        button {
+            background: #2563eb;
+            color: #ffffff;
+            border: none;
             cursor: pointer;
+            font-weight: 600;
+        }
+
+        button:hover { background: #1d4ed8; }
+        button.secondary { background: #475569; }
+        button.secondary:hover { background: #334155; }
+        button.active-tab { background: #0f766e; }
+
+        .card {
+            background: #ffffff;
+            border-radius: 14px;
+            box-shadow: 0 4px 14px rgba(0,0,0,0.08);
+            padding: 20px;
+            width: 100%;
+            max-width: 860px;
+            box-sizing: border-box;
+        }
+
+        .stage {
+            display: grid;
+            grid-template-columns: 1fr 1.2fr;
+            gap: 20px;
+            align-items: center;
+            margin-bottom: 20px;
+            padding: 16px;
+            background: #f8fafc;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+        }
+
+        @media (max-width: 640px) {
+            .stage { grid-template-columns: 1fr; }
+        }
+
+        .img-box {
+            width: 100%;
+            aspect-ratio: 16 / 9;
+            background: #e2e8f0;
+            border-radius: 10px;
+            overflow: hidden;
             display: flex;
             align-items: center;
-        }
-        
-        .story-line:last-child { border-bottom: none; }
-        .story-line:hover { background-color: #e7f1ff; }
-
-        .highlight {
-            background-color: #fff3cd !important;
-            font-weight: bold;
-            border-left: 5px solid #ffc107;
+            justify-content: center;
+            position: relative;
         }
 
-        .sentence-number {
-            font-weight: bold;
-            color: #007bff;
-            margin-right: 15px;
-            font-size: 1.2em;
-            min-width: 25px;
-            text-align: right;
+        .img-box img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
         }
-        
-        .keyword-container {
+
+        .img-placeholder {
+            color: #64748b;
+            font-size: 0.85rem;
+            text-align: center;
+            padding: 10px;
+        }
+
+        .active-display .num-badge {
+            display: inline-block;
+            background: #2563eb;
+            color: #fff;
+            font-weight: 700;
+            padding: 4px 10px;
+            border-radius: 999px;
+            font-size: 0.85rem;
+            margin-bottom: 8px;
+        }
+
+        .active-text {
+            font-size: 1.35rem;
+            font-weight: 700;
+            color: #0f172a;
+            margin: 6px 0;
+        }
+
+        .active-vi {
+            font-size: 0.95rem;
+            color: #475569;
+        }
+
+        .list-item {
             display: flex;
-            justify-content: space-between;
             align-items: center;
-        }
-        
-        .keyword {
-            font-weight: bold;
-            color: #dc3545;
-            font-size: 1.1em;
-            background: #ffe6e6;
-            padding: 2px 8px;
-            border-radius: 4px;
+            gap: 12px;
+            padding: 10px 12px;
+            border-radius: 10px;
+            border: 1px solid #e2e8f0;
+            margin-bottom: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
         }
 
+        .list-item:hover { background: #eff6ff; }
+
+        .list-item.highlighted {
+            background: #fef9c3;
+            border-color: #eab308;
+            font-weight: 700;
+        }
+
+        .item-num {
+            min-width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: #dbeafe;
+            color: #1d4ed8;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 0.9rem;
+        }
+
+        .thumb {
+            width: 64px;
+            height: 36px;
+            object-fit: cover;
+            border-radius: 6px;
+            background: #e2e8f0;
+            flex-shrink: 0;
+        }
+
+        .content-col { flex: 1; }
+        .vi-sub { font-size: 0.85rem; color: #64748b; font-weight: 400; }
     </style>
 </head>
 <body>
 
-    <h1>Công cụ Luyện Kể Chuyện - The Present (A1)</h1>
+    <h1>The Present (A1) — Luyện Kể Chuyện Theo Hình Ảnh</h1>
 
     <div class="controls">
-        <label for="voiceSelect">Giọng đọc:</label>
+        <button id="v1Btn" class="active-tab">Phiên bản 1: Câu đầy đủ</button>
+        <button id="v2Btn" class="secondary">Phiên bản 2: Keyword</button>
+
+        <label for="voiceSelect">Giọng (en-US):</label>
         <select id="voiceSelect"></select>
 
-        <label for="rateInput">Tốc độ (0.5 - 1.5):</label>
-        <input type="number" id="rateInput" value="0.9" step="0.1" min="0.5" max="1.5">
+        <label for="rateInput">Tốc độ:</label>
+        <input type="number" id="rateInput" value="0.85" step="0.05" min="0.5" max="1.4" style="width: 72px;">
 
-        <button id="speakBtn">Bắt đầu kể chuyện</button>
+        <button id="playAllBtn">Đọc tự động</button>
+        <button id="stopBtn" class="secondary">Dừng</button>
     </div>
 
-    <div class="version-container">
-        <!-- Phiên bản 1: Hiển thị từng câu đầy đủ -->
-        <div id="version1" class="version">
-            <h2>Phiên bản 1 (Tô sáng câu)</h2>
-            <!-- Các câu chuyện sẽ được chèn vào đây bằng JavaScript -->
+    <div class="card">
+        <div class="stage">
+            <div class="img-box" id="stageImgBox">
+                <img id="stageImg" src="scene1.jpg" alt="Scene 1" onerror="this.style.display='none'; document.getElementById('stageFallback').style.display='block';">
+                <div id="stageFallback" class="img-placeholder" style="display:none;">
+                    Đặt ảnh <strong>scene<span id="missingNum">1</span>.jpg</strong> cùng thư mục file HTML để hiển thị ảnh cắt từ video.
+                </div>
+            </div>
+            <div class="active-display">
+                <span class="num-badge" id="stageBadge">Câu 1 / 8</span>
+                <div class="active-text" id="stageText">The boy is playing games.</div>
+                <div class="active-vi" id="stageVi">Cậu bé đang mải chơi game.</div>
+            </div>
         </div>
 
-        <!-- Phiên bản 2: Hiển thị keyword -->
-        <div id="version2" class="version">
-            <h2>Phiên bản 2 (Keyword)</h2>
-            <!-- Các keyword sẽ được chèn vào đây bằng JavaScript -->
-        </div>
+        <div id="sentenceList"></div>
     </div>
 
     <script>
-        const synth = window.speechSynthesis;
-        const voiceSelect = document.getElementById('voiceSelect');
-        const rateInput = document.getElementById('rateInput');
-        const speakBtn = document.getElementById('speakBtn');
-        const version1Div = document.getElementById('version1');
-        const version2Div = document.getElementById('version2');
-
-        const story = [
-            { full: "The boy is playing games.", keyword: "PLAYING GAMES" },
-            { full: "His mom brings a big box.", keyword: "BRINGS A BOX" },
-            { full: "The boy opens the box.", keyword: "OPENS BOX" },
-            { full: "He sees a happy puppy!", keyword: "HAPPY PUPPY!" },
-            { full: "Oh no! It only has three legs.", keyword: "THREE LEGS" },
-            { full: "The puppy plays alone.", keyword: "PLAYS ALONE" },
-            { full: "The boy stands up with crutches.", keyword: "STANDS UP" },
-            { full: "They go outside together.", keyword: "GO OUTSIDE" }
+        const items = [
+            { img: "scene1.jpg", full: "The boy is playing games.", keyword: "PLAYING GAMES", vi: "Cậu bé đang mải chơi game." },
+            { img: "scene2.jpg", full: "His mom brings a big box.", keyword: "BRINGS A BIG BOX", vi: "Mẹ mang về một chiếc hộp lớn." },
+            { img: "scene3.jpg", full: "The boy opens the box.", keyword: "OPENS THE BOX", vi: "Cậu bé mở hộp quà." },
+            { img: "scene4.jpg", full: "He sees a happy puppy!", keyword: "HAPPY PUPPY", vi: "Cậu bé nhìn thấy một chú chó con vui vẻ!" },
+            { img: "scene5.jpg", full: "Oh no! It only has three legs.", keyword: "THREE LEGS", vi: "Ôi không! Chú chó chỉ có ba chân." },
+            { img: "scene6.jpg", full: "The puppy plays alone.", keyword: "PLAYS ALONE", vi: "Chú chó con chơi một mình." },
+            { img: "scene7.jpg", full: "The boy stands up with crutches.", keyword: "STANDS UP + CRUTCHES", vi: "Cậu bé đứng dậy với đôi nạng." },
+            { img: "scene8.jpg", full: "They go outside together.", keyword: "GO OUTSIDE TOGETHER", vi: "Họ cùng nhau đi ra ngoài." }
         ];
 
+        let mode = 1; // 1: full sentence, 2: keyword
+        let isAutoPlaying = false;
         let voices = [];
-        let currentLineIndex = 0;
-        let currentVersionDivs = []; // To store references for highlighting
 
-        function populateVoiceList() {
+        const synth = window.speechSynthesis;
+        const voiceSelect = document.getElementById("voiceSelect");
+        const rateInput = document.getElementById("rateInput");
+        const sentenceList = document.getElementById("sentenceList");
+
+        function loadVoices() {
             voices = synth.getVoices();
-            // Ưu tiên chọn giọng tiếng Anh Mỹ (en-US)
-            const englishVoices = voices.filter(v => v.lang === 'en-US');
-            
-            // Fallback: nếu không tìm thấy en-US, chọn bất kỳ giọng tiếng Anh nào
-            const allEnglish = voices.filter(v => v.lang.startsWith('en'));
-            
-            const targetVoices = englishVoices.length > 0 ? englishVoices : allEnglish;
+            const usVoices = voices.filter(v => v.lang.toLowerCase().includes("en-us"));
+            const fallbackVoices = voices.filter(v => v.lang.toLowerCase().startsWith("en"));
+            const list = usVoices.length ? usVoices : fallbackVoices;
 
-            targetVoices.forEach((voice, i) => {
-                const option = document.createElement('option');
-                option.textContent = `${voice.name} (${voice.lang})`;
-                option.setAttribute('data-name', voice.name);
-                voiceSelect.appendChild(option);
-                
-                // Chọn giọng đầu tiên làm mặc định
-                if (i === 0) voiceSelect.value = option.value;
+            voiceSelect.innerHTML = "";
+            list.forEach(v => {
+                const opt = document.createElement("option");
+                opt.value = v.name;
+                opt.textContent = `${v.name} (${v.lang})`;
+                voiceSelect.appendChild(opt);
             });
         }
 
-        // Khởi tạo danh sách giọng
-        populateVoiceList();
-        if (speechSynthesis.onvoiceschanged !== undefined) {
-            speechSynthesis.onvoiceschanged = populateVoiceList;
+        loadVoices();
+        if (synth.onvoiceschanged !== undefined) {
+            synth.onvoiceschanged = loadVoices;
         }
 
-        // Khởi tạo giao diện
-        function initUI() {
-            story.forEach((item, index) => {
-                // Version 1
-                const v1Line = document.createElement('div');
-                v1Line.className = 'story-line';
-                v1Line.innerHTML = `<span class="sentence-number">${index + 1}.</span><span>${item.full}</span>`;
-                v1Line.onclick = () => readLine(index, v1Line);
-                version1Div.appendChild(v1Line);
+        function renderList() {
+            sentenceList.innerHTML = "";
+            items.forEach((item, idx) => {
+                const row = document.createElement("div");
+                row.className = "list-item";
+                row.id = `row-${idx}`;
+                const displayLabel = mode === 1 ? item.full : item.keyword;
 
-                // Version 2
-                const v2Line = document.createElement('div');
-                v2Line.className = 'story-line keyword-container';
-                v2Line.innerHTML = `<span><span class="sentence-number">${index + 1}.</span><span class="full-sentence">${item.full}</span></span><span class="keyword">${item.keyword}</span>`;
-                v2Line.onclick = () => readLine(index, v2Line); // Click vào dòng bất kỳ để đọc
-                version2Div.appendChild(v2Line);
+                row.innerHTML = `
+                    <div class="item-num">${idx + 1}</div>
+                    <img class="thumb" src="${item.img}" alt="Scene ${idx + 1}" onerror="this.style.visibility='hidden'">
+                    <div class="content-col">
+                        <div>${displayLabel}</div>
+                        <div class="vi-sub">${item.vi}</div>
+                    </div>
+                `;
+                row.onclick = () => {
+                    isAutoPlaying = false;
+                    speakAt(idx, false);
+                };
+                sentenceList.appendChild(row);
             });
         }
-        
-        initUI();
 
-        function readLine(index, lineElement) {
-            if (synth.speaking) {
-                synth.cancel();
+        function updateStage(idx) {
+            const item = items[idx];
+            document.getElementById("stageBadge").textContent = `Câu ${idx + 1} / ${items.length}`;
+            document.getElementById("stageText").textContent = mode === 1 ? item.full : item.keyword;
+            document.getElementById("stageVi").textContent = item.vi;
+
+            const imgEl = document.getElementById("stageImg");
+            const fbEl = document.getElementById("stageFallback");
+            document.getElementById("missingNum").textContent = idx + 1;
+            fbEl.style.display = "none";
+            imgEl.style.display = "block";
+            imgEl.src = item.img;
+
+            document.querySelectorAll(".list-item").forEach(el => el.classList.remove("highlighted"));
+            const activeRow = document.getElementById(`row-${idx}`);
+            if (activeRow) activeRow.classList.add("highlighted");
+        }
+
+        function speakAt(idx, autoNext) {
+            if (idx >= items.length) {
+                isAutoPlaying = false;
+                return;
             }
+            synth.cancel();
+            updateStage(idx);
 
-            // Hủy tô sáng cũ
-            document.querySelectorAll('.highlight').forEach(el => el.classList.remove('highlight'));
+            // Luôn đọc câu tiếng Anh chuẩn để bé nghe tự nhiên, hiển thị theo phiên bản đã chọn
+            const utter = new SpeechSynthesisUtterance(items[idx].full);
+            const selectedName = voiceSelect.value;
+            const chosen = voices.find(v => v.name === selectedName);
+            if (chosen) utter.voice = chosen;
+            utter.lang = "en-US";
+            utter.rate = parseFloat(rateInput.value) || 0.85;
 
-            // Tô sáng dòng mới
-            lineElement.classList.add('highlight');
-            
-            const utterance = new SpeechSynthesisUtterance(story[index].full);
-            
-            const selectedVoiceName = voiceSelect.selectedOptions[0].getAttribute('data-name');
-            utterance.voice = voices.find(v => v.name === selectedVoiceName);
-            utterance.rate = parseFloat(rateInput.value);
-            
-            utterance.onend = () => {
-                // Hủy tô sáng khi đọc xong
-                lineElement.classList.remove('highlight');
-                currentLineIndex = index + 1;
-                if (currentLineIndex < story.length) {
-                    // Tự động đọc câu tiếp theo (optional)
-                    // readNextLine(); 
+            utter.onend = () => {
+                if (autoNext && isAutoPlaying) {
+                    setTimeout(() => speakAt(idx + 1, true), 450);
                 }
             };
 
-            synth.speak(utterance);
+            synth.speak(utter);
         }
 
-        function readNextLine() {
-            if (currentLineIndex >= story.length) {
-                currentLineIndex = 0; // Quay lại từ đầu
-                speakBtn.textContent = "Bắt đầu lại";
-                return;
-            }
-            
-            // Tìm element tương ứng của cả 2 version
-            const v1Element = version1Div.querySelectorAll('.story-line')[currentLineIndex];
-            const v2Element = version2Div.querySelectorAll('.story-line')[currentLineIndex];
-            
-            // Chọn 1 element ngẫu nhiên để highlight và đọc
-            readLine(currentLineIndex, Math.random() > 0.5 ? v1Element : v2Element);
-        }
+        document.getElementById("v1Btn").onclick = () => {
+            mode = 1;
+            document.getElementById("v1Btn").className = "active-tab";
+            document.getElementById("v2Btn").className = "secondary";
+            renderList();
+            updateStage(0);
+        };
 
-        speakBtn.addEventListener('click', () => {
-            if (synth.speaking) {
-                synth.cancel();
-                speakBtn.textContent = "Bắt đầu kể chuyện";
-            } else {
-                speakBtn.textContent = "Dừng kể chuyện";
-                currentLineIndex = 0;
-                readNextLine();
-            }
-        });
+        document.getElementById("v2Btn").onclick = () => {
+            mode = 2;
+            document.getElementById("v2Btn").className = "active-tab";
+            document.getElementById("v1Btn").className = "secondary";
+            renderList();
+            updateStage(0);
+        };
 
+        document.getElementById("playAllBtn").onclick = () => {
+            isAutoPlaying = true;
+            speakAt(0, true);
+        };
+
+        document.getElementById("stopBtn").onclick = () => {
+            isAutoPlaying = false;
+            synth.cancel();
+        };
+
+        renderList();
+        updateStage(0);
     </script>
 </body>
 </html>
