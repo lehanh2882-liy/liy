@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="vi">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>The Present (A1) - Luyện Kể Chuyện Theo Ảnh</title>
+    <title>The Present (A1) - Storytelling Practice</title>
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -18,7 +18,7 @@
 
         h1 {
             margin: 0 0 16px;
-            font-size: 1.5rem;
+            font-size: 1.45rem;
             text-align: center;
             color: #1e3a8a;
         }
@@ -30,7 +30,7 @@
             box-shadow: 0 2px 8px rgba(0,0,0,0.08);
             margin-bottom: 18px;
             display: flex;
-            gap: 12px;
+            gap: 10px;
             align-items: center;
             flex-wrap: wrap;
             justify-content: center;
@@ -70,48 +70,14 @@
         }
 
         .stage {
-            display: grid;
-            grid-template-columns: 1fr 1.2fr;
-            gap: 20px;
-            align-items: center;
             margin-bottom: 20px;
-            padding: 16px;
+            padding: 18px;
             background: #f8fafc;
             border-radius: 12px;
             border: 1px solid #e2e8f0;
         }
 
-        @media (max-width: 640px) {
-            .stage { grid-template-columns: 1fr; }
-        }
-
-        .img-box {
-            width: 100%;
-            aspect-ratio: 16 / 9;
-            background: #e2e8f0;
-            border-radius: 10px;
-            overflow: hidden;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            position: relative;
-        }
-
-        .img-box img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            display: block;
-        }
-
-        .img-placeholder {
-            color: #64748b;
-            font-size: 0.85rem;
-            text-align: center;
-            padding: 10px;
-        }
-
-        .active-display .num-badge {
+        .num-badge {
             display: inline-block;
             background: #2563eb;
             color: #fff;
@@ -126,19 +92,24 @@
             font-size: 1.35rem;
             font-weight: 700;
             color: #0f172a;
-            margin: 6px 0;
+            margin: 4px 0;
+            line-height: 1.4;
         }
 
-        .active-vi {
+        .section-heading {
             font-size: 0.95rem;
-            color: #475569;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            color: #1e3a8a;
+            margin: 14px 0 8px;
         }
 
         .list-item {
             display: flex;
             align-items: center;
             gap: 12px;
-            padding: 10px 12px;
+            padding: 11px 14px;
             border-radius: 10px;
             border: 1px solid #e2e8f0;
             margin-bottom: 8px;
@@ -167,65 +138,90 @@
             font-size: 0.9rem;
         }
 
-        .thumb {
-            width: 64px;
-            height: 36px;
-            object-fit: cover;
-            border-radius: 6px;
-            background: #e2e8f0;
-            flex-shrink: 0;
+        .line-text {
+            font-size: 1.03rem;
+            line-height: 1.45;
         }
-
-        .content-col { flex: 1; }
-        .vi-sub { font-size: 0.85rem; color: #64748b; font-weight: 400; }
     </style>
 </head>
 <body>
 
-    <h1>The Present (A1) — Luyện Kể Chuyện Theo Hình Ảnh</h1>
+    <h1>The Present — Storytelling Practice</h1>
 
     <div class="controls">
-        <button id="v1Btn" class="active-tab">Phiên bản 1: Câu đầy đủ</button>
-        <button id="v2Btn" class="secondary">Phiên bản 2: Keyword</button>
+        <button id="v1Btn" class="active-tab">Version 1: Full Sentences</button>
+        <button id="v2Btn" class="secondary">Version 2: Keywords</button>
 
-        <label for="voiceSelect">Giọng (en-US):</label>
+        <label for="voiceSelect">Voice (en-US):</label>
         <select id="voiceSelect"></select>
 
-        <label for="rateInput">Tốc độ:</label>
+        <label for="rateInput">Speed:</label>
         <input type="number" id="rateInput" value="0.85" step="0.05" min="0.5" max="1.4" style="width: 72px;">
 
-        <button id="playAllBtn">Đọc tự động</button>
-        <button id="stopBtn" class="secondary">Dừng</button>
+        <button id="playAllBtn">Auto Play</button>
+        <button id="stopBtn" class="secondary">Stop</button>
     </div>
 
     <div class="card">
         <div class="stage">
-            <div class="img-box" id="stageImgBox">
-                <img id="stageImg" src="scene1.jpg" alt="Scene 1" onerror="this.style.display='none'; document.getElementById('stageFallback').style.display='block';">
-                <div id="stageFallback" class="img-placeholder" style="display:none;">
-                    Đặt ảnh <strong>scene<span id="missingNum">1</span>.jpg</strong> cùng thư mục file HTML để hiển thị ảnh cắt từ video.
-                </div>
-            </div>
-            <div class="active-display">
-                <span class="num-badge" id="stageBadge">Câu 1 / 8</span>
-                <div class="active-text" id="stageText">The boy is playing games.</div>
-                <div class="active-vi" id="stageVi">Cậu bé đang mải chơi game.</div>
-            </div>
+            <span class="num-badge" id="stageBadge">Sentence 1 / 9</span>
+            <div class="active-text" id="stageText">A boy is playing video games on the sofa in a dark room.</div>
         </div>
 
-        <div id="sentenceList"></div>
+        <div class="section-heading">Story</div>
+        <div id="storyList"></div>
+
+        <div class="section-heading">My feeling</div>
+        <div id="feelingList"></div>
     </div>
 
     <script>
         const items = [
-            { img: "scene1.jpg", full: "The boy is playing games.", keyword: "PLAYING GAMES", vi: "Cậu bé đang mải chơi game." },
-            { img: "scene2.jpg", full: "His mom brings a big box.", keyword: "BRINGS A BIG BOX", vi: "Mẹ mang về một chiếc hộp lớn." },
-            { img: "scene3.jpg", full: "The boy opens the box.", keyword: "OPENS THE BOX", vi: "Cậu bé mở hộp quà." },
-            { img: "scene4.jpg", full: "He sees a happy puppy!", keyword: "HAPPY PUPPY", vi: "Cậu bé nhìn thấy một chú chó con vui vẻ!" },
-            { img: "scene5.jpg", full: "Oh no! It only has three legs.", keyword: "THREE LEGS", vi: "Ôi không! Chú chó chỉ có ba chân." },
-            { img: "scene6.jpg", full: "The puppy plays alone.", keyword: "PLAYS ALONE", vi: "Chú chó con chơi một mình." },
-            { img: "scene7.jpg", full: "The boy stands up with crutches.", keyword: "STANDS UP + CRUTCHES", vi: "Cậu bé đứng dậy với đôi nạng." },
-            { img: "scene8.jpg", full: "They go outside together.", keyword: "GO OUTSIDE TOGETHER", vi: "Họ cùng nhau đi ra ngoài." }
+            {
+                section: "story",
+                full: "A boy is playing video games on the sofa in a dark room.",
+                keyword: "PLAYING GAMES IN DARK ROOM"
+            },
+            {
+                section: "story",
+                full: "His mom comes home, opens the curtains for sunlight, and gives him a big box.",
+                keyword: "MOM OPENS CURTAINS + BIG BOX"
+            },
+            {
+                section: "story",
+                full: "Opening the box, he sees a cute yellow puppy and feels very happy.",
+                keyword: "SEES CUTE YELLOW PUPPY + HAPPY"
+            },
+            {
+                section: "story",
+                full: "Then he sees the puppy has only three legs, so he feels sad and pushes it away.",
+                keyword: "THREE LEGS + SAD + PUSHES AWAY"
+            },
+            {
+                section: "story",
+                full: "The puppy does not give up, playing happily with a red ball, jumping, falling, and getting up again.",
+                keyword: "NOT GIVE UP + RED BALL + GETS UP"
+            },
+            {
+                section: "story",
+                full: "Smiling, the boy throws the ball and stands up with his crutches—he has only one leg, too!",
+                keyword: "THROWS BALL + CRUTCHES + ONE LEG"
+            },
+            {
+                section: "story",
+                full: "He opens the door, and they go outside to play in the sun.",
+                keyword: "OPENS DOOR + PLAY IN THE SUN"
+            },
+            {
+                section: "feeling",
+                full: "I love this touching story.",
+                keyword: "LOVE TOUCHING STORY"
+            },
+            {
+                section: "feeling",
+                full: "The brave, happy puppy teaches me to love myself and enjoy life!",
+                keyword: "BRAVE PUPPY + LOVE MYSELF + ENJOY LIFE"
+            }
         ];
 
         let mode = 1; // 1: full sentence, 2: keyword
@@ -235,7 +231,8 @@
         const synth = window.speechSynthesis;
         const voiceSelect = document.getElementById("voiceSelect");
         const rateInput = document.getElementById("rateInput");
-        const sentenceList = document.getElementById("sentenceList");
+        const storyList = document.getElementById("storyList");
+        const feelingList = document.getElementById("feelingList");
 
         function loadVoices() {
             voices = synth.getVoices();
@@ -245,10 +242,10 @@
 
             voiceSelect.innerHTML = "";
             list.forEach(v => {
-                const opt = document.createElement("option");
-                opt.value = v.name;
-                opt.textContent = `${v.name} (${v.lang})`;
-                voiceSelect.appendChild(opt);
+                const option = document.createElement("option");
+                option.value = v.name;
+                option.textContent = `${v.name} (${v.lang})`;
+                voiceSelect.appendChild(option);
             });
         }
 
@@ -257,8 +254,10 @@
             synth.onvoiceschanged = loadVoices;
         }
 
-        function renderList() {
-            sentenceList.innerHTML = "";
+        function renderLists() {
+            storyList.innerHTML = "";
+            feelingList.innerHTML = "";
+
             items.forEach((item, idx) => {
                 const row = document.createElement("div");
                 row.className = "list-item";
@@ -267,32 +266,25 @@
 
                 row.innerHTML = `
                     <div class="item-num">${idx + 1}</div>
-                    <img class="thumb" src="${item.img}" alt="Scene ${idx + 1}" onerror="this.style.visibility='hidden'">
-                    <div class="content-col">
-                        <div>${displayLabel}</div>
-                        <div class="vi-sub">${item.vi}</div>
-                    </div>
+                    <div class="line-text">${displayLabel}</div>
                 `;
                 row.onclick = () => {
                     isAutoPlaying = false;
                     speakAt(idx, false);
                 };
-                sentenceList.appendChild(row);
+
+                if (item.section === "story") {
+                    storyList.appendChild(row);
+                } else {
+                    feelingList.appendChild(row);
+                }
             });
         }
 
         function updateStage(idx) {
             const item = items[idx];
-            document.getElementById("stageBadge").textContent = `Câu ${idx + 1} / ${items.length}`;
+            document.getElementById("stageBadge").textContent = `Sentence ${idx + 1} / ${items.length}`;
             document.getElementById("stageText").textContent = mode === 1 ? item.full : item.keyword;
-            document.getElementById("stageVi").textContent = item.vi;
-
-            const imgEl = document.getElementById("stageImg");
-            const fbEl = document.getElementById("stageFallback");
-            document.getElementById("missingNum").textContent = idx + 1;
-            fbEl.style.display = "none";
-            imgEl.style.display = "block";
-            imgEl.src = item.img;
 
             document.querySelectorAll(".list-item").forEach(el => el.classList.remove("highlighted"));
             const activeRow = document.getElementById(`row-${idx}`);
@@ -307,7 +299,6 @@
             synth.cancel();
             updateStage(idx);
 
-            // Luôn đọc câu tiếng Anh chuẩn để bé nghe tự nhiên, hiển thị theo phiên bản đã chọn
             const utter = new SpeechSynthesisUtterance(items[idx].full);
             const selectedName = voiceSelect.value;
             const chosen = voices.find(v => v.name === selectedName);
@@ -328,7 +319,7 @@
             mode = 1;
             document.getElementById("v1Btn").className = "active-tab";
             document.getElementById("v2Btn").className = "secondary";
-            renderList();
+            renderLists();
             updateStage(0);
         };
 
@@ -336,7 +327,7 @@
             mode = 2;
             document.getElementById("v2Btn").className = "active-tab";
             document.getElementById("v1Btn").className = "secondary";
-            renderList();
+            renderLists();
             updateStage(0);
         };
 
@@ -350,7 +341,7 @@
             synth.cancel();
         };
 
-        renderList();
+        renderLists();
         updateStage(0);
     </script>
 </body>
